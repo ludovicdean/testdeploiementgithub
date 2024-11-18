@@ -1,0 +1,34 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "@components/BaseHead.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import SmallCard from "@components/SmallCard.astro";
+
+const { name, description } = Astro.props;
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const filteredPosts = posts.filter((post) => post.data.tags?.includes(name));
+---
+
+<html lang="en">
+    <BaseHead title={name} description={description} />
+
+    <body>
+        <Header />
+        <main>
+            <h2>{name}</h2>
+            <p>{description}</p>
+            <ul class="flex flex-wrap gap-4">
+                {
+                    filteredPosts.map((post) => (
+                            <SmallCard post={post} />
+                    ))
+                }
+            </ul>
+        </main>
+        <Footer />
+    </body>
+</html>
